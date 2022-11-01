@@ -8,9 +8,7 @@ from const.hsv_idx import HUE_IDX, SATURATION_IDX, VALUE_IDX
 class TrackerByColor(TrackerBase):
     def __init__(self, min_hsv, max_hsv, threshold):
         super().__init__()
-        self._min_hsv = np.array(min_hsv)
-        self._max_hsv = np.array(max_hsv)
-        self._threshold = threshold
+        self.set_param_for_tracking(min_hsv, max_hsv, threshold)
 
     def set_param_for_tracking(self, min_hsv, max_hsv, threshold):
         self._min_hsv = np.array(min_hsv)
