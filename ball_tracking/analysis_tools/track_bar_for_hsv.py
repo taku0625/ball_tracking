@@ -65,6 +65,5 @@ class TrackBarForHSV:
 
     def save_hsv_param(self):
         self.__set_all_param_to_track_bar_value()
-        np.save(self._min_hsv)
-        np.save(self._max_hsv)
-        np.save(self._threshold)
+        np.savez("bin/hsv_param.npz", self._min_hsv, self._max_hsv, self._threshold)
+        print("This hsv param was saved.")
