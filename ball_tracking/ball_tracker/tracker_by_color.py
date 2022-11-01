@@ -11,7 +11,7 @@ class TrackerByColor(TrackerBase):
         self._min_hsv = np.array(min_hsv)
         self._max_hsv = np.array(max_hsv)
         self._threshold = threshold
-    
+
     def set_param(self, min_hsv, max_hsv, threshold):
         self._min_hsv = np.array(min_hsv)
         self._max_hsv = np.array(max_hsv)
@@ -22,41 +22,37 @@ class TrackerByColor(TrackerBase):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         if self._min_hsv[HUE_IDX] >= 0:
-            #色相が正の値のとき、赤以外のマスク
+            # 色相が正の値のとき、赤以外のマスク
             mask = cv2.inRange(hsv, self._min_hsv, self._max_hsv)
         else:
-            #色相が負の値のとき、赤用マスク
+            # 色相が負の値のとき、赤用マスク
             hue = hsv[:, :, HUE_IDX]
             saturation = hsv[:, :, SATURATION_IDX]
             value = hsv[:, :, VALUE_IDX]
             mask = np.zeros(hue.shape, dtype=np.uint8)
             mask[
-                ((hue < self._min_hsv[HUE_IDX]*-1) | hue > self._max_hsv[HUE_IDX]) 
-                & (saturation > self._min_hsv[SATURATION_IDX]) 
-                & (saturation < self._max_hsv[SATURATION_IDX]) 
-                & (value > self._min_hsv[VALUE_IDX]) 
+                ((hue < self._min_hsv[HUE_IDX] * -1) | hue > self._max_hsv[HUE_IDX])
+                & (saturation > self._min_hsv[SATURATION_IDX])
+                & (saturation < self._max_hsv[SATURATION_IDX])
+                & (value > self._min_hsv[VALUE_IDX])
                 & (value < self._max_hsv[VALUE_IDX])
             ] = 255
 
         return cv2.bitwise_and(image, image, mask=mask)
-    
+
     def __find_contours(self, image):
         mask_image = self.generate_mask(image)
         gray_image = cv2.cvtColor(mask_image, cv2.COLOR_RGB2GRAY)
         _, binary = cv2.threshold(
-            gray_image, 
-            self._threshold, 
-            255, 
+            gray_image,
+            self._threshold,
+            255,
             cv2.THRESH_BINARY,
         )
-        contours, _ = cv2.findContours(
-            binary, 
-            cv2.RETR_EXTERNAL, 
-            cv2.CHAIN_APPROX_SIMPLE
-        )
+        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         # 小さい輪郭は誤検出として削除する
         return list(filter(lambda x: cv2.contourArea(x) > 100, contours))
-    
+
     def draw_contours(self, image):
         contours = self.__find_contours(image)
         # 輪郭を描画する。
@@ -66,15 +62,15 @@ class TrackerByColor(TrackerBase):
         for contour in contours:
             for point in contour:
                 cv2.circle(image, point[0], 3, (0, 255, 0), -1)
-                
+
         return image
-    
+
     def _find_outline(self, image):
         contours = self.__find_contours(image)
         # 一番大きい輪郭を抽出
         contours.sort(key=cv2.contourArea, reverse=True)
-        
-        #一つ以上検出
+
+        # 一つ以上検出
         if len(contours) > 0:
             # 最小外接円を描く
             (x, y), radius = cv2.minEnclosingCircle(contours[-1])
@@ -83,9 +79,9 @@ class TrackerByColor(TrackerBase):
         else:
             center = None
             radius = None
-        
+
         return (center, radius)
-    
+
     def draw_outline(self, image, outline_info):
         (center, radius) = outline_info
         cv2.circle(image, center, radius, (0, 255, 0), 2)

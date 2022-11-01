@@ -10,7 +10,7 @@ class TrackerByColor(TrackerBase):
         self.__create_tracker(tracker_type)
         roi = cv2.selectROI(image)
         _ = self._tracker.init(image, roi)
-        
+
     def __create_tracker(self, tracker_type):
         if tracker_type == "Boosting":
             self._tracker = cv2.legacy.TrackerBoosting_create()
@@ -22,7 +22,7 @@ class TrackerByColor(TrackerBase):
             self._tracker = cv2.legacy.TrackerTLD_create()
         elif tracker_type == "MedianFlow":
             self._tracker = cv2.legacy.TrackerMedianFlow_create()
-        
+
     def _find_outline(self, image):
         success, roi = self._tracker.update(image)
         (x, y, w, h) = tuple(map(int, roi))
@@ -34,9 +34,9 @@ class TrackerByColor(TrackerBase):
             p1 = None
             p2 = None
             center = None
-        
+
         return (center, p1, p2)
-            
+
     def draw_outline(self, image, outline_info):
         (_, p1, p2) = outline_info
         return cv2.rectangle(image, p1, p2, (0, 255, 0), 3)

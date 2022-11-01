@@ -8,7 +8,7 @@ def main():
     MAX_HSV = [88,165,255]    # [180, 255, 255]
     THRESHOLD = 50
     
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     tracker = TrackerByColor(MIN_HSV, MAX_HSV, THRESHOLD)
     
     while True:
@@ -18,7 +18,7 @@ def main():
         
         cv2.imshow("image", frame)
         
-        if cv2.waitKey(30) & 0xFF == ord('q'):
+        if cv2.waitKey(30) & 0xFF == ord("q"):
             break
 
     cap.release()
