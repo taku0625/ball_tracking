@@ -21,7 +21,7 @@ def main():
     while True:
         _, frame = cap.read()
 
-        tracker.set_param(*track_bar.track_bar_poses)
+        tracker.set_param(*track_bar.track_bar_positions)
         frame = tracker.generate_mask(frame)
 
         cv2.imshow("image", frame)
