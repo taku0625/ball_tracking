@@ -22,7 +22,7 @@ class TrackBarForHSV:
         cv2.createTrackbar("threshold", "track_bar", initial_threshold, 100, nothing)
 
     @property
-    def track_bar_poses(self):
+    def track_bar_positions(self):
         self.__set_all_param_to_track_bar_value()
         return self._min_hsv, self._max_hsv, self._threshold
 
