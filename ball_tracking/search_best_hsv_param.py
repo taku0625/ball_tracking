@@ -1,6 +1,3 @@
-import asyncio
-import aioconsole
-import concurrent.futures
 import cv2
 
 from ball_tracker.tracker_by_color import TrackerByColor
@@ -11,8 +8,6 @@ def main():
     MIN_HSV = [0, 180, 100]  # [150, 50, 200]
     MAX_HSV = [255, 255, 255]  # [180, 255, 255]
     THRESHOLD = 50
-
-    do_save = None
 
     cap = cv2.VideoCapture(0)
     tracker = TrackerByColor(MIN_HSV, MAX_HSV, THRESHOLD)
@@ -28,11 +23,8 @@ def main():
 
         if cv2.waitKey(30) & 0xFF == ord("q"):
             break
-
-        if do_save == "y":
+        elif cv2.waitKey(30) & 0xFF == ord("s"):
             track_bar.save_hsv_param()
-        elif do_save == "n":
-            break
 
     cap.release()
     cv2.destroyAllWindows()
