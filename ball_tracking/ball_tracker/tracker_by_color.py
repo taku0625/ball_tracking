@@ -18,14 +18,11 @@ class TrackerByColor(TrackerBase):
         self._threshold = threshold
 
     def generate_mask(self, image):
-        # HSVに変換
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         if self._min_hsv[HUE_IDX] >= 0:
-            # 色相が正の値のとき、赤以外のマスク
             mask = cv2.inRange(hsv, self._min_hsv, self._max_hsv)
         else:
-            # 色相が負の値のとき、赤用マスク
             hue = hsv[:, :, HUE_IDX]
             saturation = hsv[:, :, SATURATION_IDX]
             value = hsv[:, :, VALUE_IDX]
@@ -50,15 +47,12 @@ class TrackerByColor(TrackerBase):
             cv2.THRESH_BINARY,
         )
         contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        # 小さい輪郭は誤検出として削除する
         return list(filter(lambda x: cv2.contourArea(x) > 100, contours))
 
     def draw_contours(self, image):
         contours = self.__find_contours(image)
-        # 輪郭を描画する。
         cv2.drawContours(image, contours, -1, color=(0, 0, 255), thickness=2)
 
-        # 輪郭の点の描画
         for contour in contours:
             for point in contour:
                 cv2.circle(image, point[0], 3, (0, 255, 0), -1)
@@ -67,12 +61,9 @@ class TrackerByColor(TrackerBase):
 
     def _find_outline(self, image):
         contours = self.__find_contours(image)
-        # 一番大きい輪郭を抽出
         contours.sort(key=cv2.contourArea, reverse=True)
 
-        # 一つ以上検出
         if len(contours) > 0:
-            # 最小外接円を描く
             (x, y), radius = cv2.minEnclosingCircle(contours[-1])
             center = (int(x), int(y))
             radius = int(radius)
