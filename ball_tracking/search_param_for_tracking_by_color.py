@@ -1,7 +1,7 @@
 import cv2
 
 from ball_tracker.tracker_by_color import TrackerByColor
-from analysis_tools.track_bar_for_hsv import TrackBarForHSV
+from analysis_tools.track_bar_for_tracking_by_color import TrackBarForTrackingByColor
 
 
 def main():
@@ -11,12 +11,12 @@ def main():
 
     cap = cv2.VideoCapture(0)
     tracker = TrackerByColor(MIN_HSV, MAX_HSV, THRESHOLD)
-    track_bar = TrackBarForHSV(MIN_HSV, MAX_HSV, THRESHOLD)
+    track_bar = TrackBarForTrackingByColor(MIN_HSV, MAX_HSV, THRESHOLD)
 
     while True:
         _, frame = cap.read()
 
-        tracker.set_param(*track_bar.track_bar_positions)
+        tracker.set_param_for_tracking(*track_bar.param_for_tracking_by_color)
         frame = tracker.generate_mask(frame)
 
         cv2.imshow("image", frame)
@@ -24,7 +24,7 @@ def main():
         if cv2.waitKey(30) & 0xFF == ord("q"):
             break
         elif cv2.waitKey(30) & 0xFF == ord("s"):
-            track_bar.save_hsv_param()
+            track_bar.save_param_for_tracking_by_color()
 
     cap.release()
     cv2.destroyAllWindows()

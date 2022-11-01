@@ -12,7 +12,7 @@ class TrackerByColor(TrackerBase):
         self._max_hsv = np.array(max_hsv)
         self._threshold = threshold
 
-    def set_param(self, min_hsv, max_hsv, threshold):
+    def set_param_for_tracking(self, min_hsv, max_hsv, threshold):
         self._min_hsv = np.array(min_hsv)
         self._max_hsv = np.array(max_hsv)
         self._threshold = threshold

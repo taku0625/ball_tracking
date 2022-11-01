@@ -4,7 +4,7 @@ import numpy as np
 from const.hsv_idx import HUE_IDX, SATURATION_IDX, VALUE_IDX
 
 
-class TrackBarForHSV:
+class TrackBarForTrackingByColor:
     def __init__(self, initial_min_hsv, initial_max_hsv, initial_threshold):
         def nothing(x):
             pass
@@ -22,8 +22,8 @@ class TrackBarForHSV:
         cv2.createTrackbar("threshold", "track_bar", initial_threshold, 100, nothing)
 
     @property
-    def track_bar_positions(self):
-        self.__set_all_param_to_track_bar_value()
+    def param_for_tracking_by_color(self):
+        self.__set_param_for_tracking_by_color_to_track_bar_value()
         return self._min_hsv, self._max_hsv, self._threshold
 
     @property
@@ -41,7 +41,7 @@ class TrackBarForHSV:
         self.__set_threshold_to_track_bar_value()
         return self._threshold
 
-    def __set_all_param_to_track_bar_value(self):
+    def __set_param_for_tracking_by_color_to_track_bar_value(self):
         self.__set_min_hsv_to_track_bar_value()
         self.__set_max_hsv_to_track_bar_value()
         self.__set_threshold_to_track_bar_value()
@@ -63,7 +63,12 @@ class TrackBarForHSV:
     def __set_threshold_to_track_bar_value(self):
         self._threshold = cv2.getTrackbarPos("threshold", "track_bar")
 
-    def save_hsv_param(self):
-        self.__set_all_param_to_track_bar_value()
-        np.savez("bin/hsv_param.npz", self._min_hsv, self._max_hsv, self._threshold)
-        print("This hsv param was saved.")
+    def save_param_for_tracking_by_color(self):
+        self.__set_param_for_tracking_by_color_to_track_bar_value()
+        np.savez(
+            "bin/param_for_tracking_by_color.npz",
+            min_hsv=self._min_hsv,
+            max_hsv=self._max_hsv,
+            threshold=self._threshold,
+        )
+        print("This param for tracking by color was saved.")
