@@ -30,19 +30,16 @@ def main():
     while True:
         _, frame = cap.read()
 
-        cv2.imshow("image", frame)
-
         if do_save_video:
+            frame = tracker.draw_trajectory(frame)
             writer.write(frame)
+        cv2.imshow("image", frame)
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
         elif cv2.waitKey(1) & 0xFF == ord("s"):
-            frame = tracker.draw_trajectory(frame)
             do_save_video = True
             print("Saving video")
-        elif cv2.waitKey(1) & 0xFF == ord("f"):
-            pass
 
     cap.release()
     writer.release()
