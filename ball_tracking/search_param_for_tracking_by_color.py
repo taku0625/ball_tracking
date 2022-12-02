@@ -21,10 +21,11 @@ def main():
 
         cv2.imshow("image", frame)
 
-        if cv2.waitKey(30) & 0xFF == ord("q"):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
-        elif cv2.waitKey(30) & 0xFF == ord("s"):
+        elif cv2.waitKey(1) & 0xFF == ord("s"):
             track_bar.save_param_for_tracking_by_color()
+            print('The param is saved.')
 
     cap.release()
     cv2.destroyAllWindows()
