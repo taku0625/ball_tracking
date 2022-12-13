@@ -4,7 +4,7 @@ import numpy as np
 from .tracker_base import TrackerBase
 
 
-class TrackerByColor(TrackerBase):
+class TrackerByLegacy(TrackerBase):
     def __init__(self, image, tracker_type="KCF"):
         super().__init__()
         self.__create_tracker(tracker_type)
