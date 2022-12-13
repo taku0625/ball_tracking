@@ -22,6 +22,8 @@ class TrackerByColor(TrackerBase):
             self._tracker = cv2.legacy.TrackerTLD_create()
         elif tracker_type == "MedianFlow":
             self._tracker = cv2.legacy.TrackerMedianFlow_create()
+        else:
+            raise ValueError("The tracker type does not exist.")
 
     def _find_outline(self, image):
         success, roi = self._tracker.update(image)
