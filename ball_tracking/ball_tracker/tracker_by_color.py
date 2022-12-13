@@ -57,7 +57,7 @@ class TrackerByColor(TrackerBase):
 
         return image
 
-    def _find_outline(self, image):
+    def _find_outline_of_circle(self, image):
         contours = self.__find_contours(image)
         contours.sort(key=cv2.contourArea, reverse=True)
 
@@ -71,7 +71,24 @@ class TrackerByColor(TrackerBase):
 
         return (center, radius)
 
-    def draw_outline(self, image, outline_info):
+    def _find_outline_of_rect(self, image):
+        contours = self.__find_contours(image)
+        contours.sort(key=cv2.contourArea, reverse=True)
+
+        if len(contours) > 0:
+            rect = cv2.minAreaRect(contours[-1])
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+        else:
+            box = None
+
+        return box
+
+    def draw_outline_of_circle(self, image, outline_info):
         (center, radius) = outline_info
         cv2.circle(image, center, radius, (0, 255, 0), 2)
+        return image
+
+    def draw_outline_of_rect(self, image, outline_info):
+        cv2.drawContours(image, [outline_info], 0, (0, 255, 0), 2)
         return image
