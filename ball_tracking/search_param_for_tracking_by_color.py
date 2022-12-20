@@ -1,6 +1,6 @@
 import cv2
 
-from ball_tracker.tracker_by_color import TrackerByColor
+from analysis_tools.hsv_processor import HsvProcessor
 from analysis_tools.track_bar_for_tracking_by_color import TrackBarForTrackingByColor
 from const.pkg_path import (
     BASE_VIDEO_DIR_HOME,
@@ -17,7 +17,7 @@ def main():
     THRESHOLD = 50
 
     cap = cv2.VideoCapture(BASE_VIDEO_PATH)
-    tracker = TrackerByColor(MIN_HSV, MAX_HSV, THRESHOLD)
+    hsv_processor = HsvProcessor(MIN_HSV, MAX_HSV, THRESHOLD)
     track_bar = TrackBarForTrackingByColor(MIN_HSV, MAX_HSV, THRESHOLD)
 
     while True:

@@ -25,7 +25,7 @@ class TrackerByLegacy(TrackerBase):
         else:
             raise ValueError("The tracker type does not exist.")
 
-    def _find_outline(self, image):
+    def find_outline(self, image):
         success, roi = self._tracker.update(image)
         (x, y, w, h) = tuple(map(int, roi))
         if success:

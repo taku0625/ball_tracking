@@ -7,7 +7,7 @@ class TrackerBase(metaclass=ABCMeta):
         self._start_draw_trajectory = True
 
     @abstractmethod
-    def _find_outline(self, image):
+    def find_outline(self, image):
         """_summary_
 
         Args:
@@ -24,7 +24,7 @@ class TrackerBase(metaclass=ABCMeta):
         raise NotImplementedError
 
     def draw_trajectory(self, image, draw_outline=True):
-        outline_info = self._find_outline(image)
+        outline_info = self.find_outline(image)
         center = outline_info[0]
 
         if self._start_draw_trajectory:
