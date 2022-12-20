@@ -21,12 +21,17 @@ def main():
     track_bar = TrackBarForTrackingByColor(MIN_HSV, MAX_HSV, THRESHOLD)
 
     while True:
-        _, frame = cap.read()
+        grabbed, frame = cap.read()
+        if not grabbed:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            continue
+        hsv_processor.set_param_for_tracking(*track_bar.param_for_tracking_by_color)
+        mask_frame = hsv_processor.generate_mask(frame)
+        out_line_info = hsv_processor.find_outline_of_rect(frame)
+        cut_frame = hsv_processor.draw_outline_of_rect(frame, out_line_info)
 
-        tracker.set_param_for_tracking(*track_bar.param_for_tracking_by_color)
-        frame = tracker.generate_mask(frame)
-
-        cv2.imshow("image", frame)
+        cv2.imshow("image", mask_frame)
+        cv2.imshow("cut_image", cut_frame)
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
