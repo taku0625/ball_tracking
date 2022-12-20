@@ -2,13 +2,23 @@ import cv2
 import numpy as np
 
 from ball_tracker.tracker_by_color import TrackerByColor
-
+from const.pkg_path import (
+    BASE_VIDEO_DIR_HOME,
+    HSV_PARAM_DIR_HOME,
+    PROCESSED_VIDEO_DIR_HOME,
+    TRAJECTORY_IMAGE_DIR_HOME,
+    TRAJECTORY_POINTS_DIR_HOME,
+)
+from const.design_and_drafting_no3 import SUPPORT_WIDTH, SUPPORT_HEIGHT
+import matplotlib.pyplot as plt
 
 def main():
-    param_for_tracking_by_color = np.load("bin/param_for_tracking_by_color.npz", allow_pickle=True)
-    min_hsv = param_for_tracking_by_color["min_hsv"]  # [0, 130, 100]  # [150, 50, 200]
-    max_hsv = param_for_tracking_by_color["max_hsv"]  # [88, 165, 255]  # [180, 255, 255]
-    threshold = float(param_for_tracking_by_color["threshold"])  # 50
+    PROJECT_NAME = "Design_and_Dragting_No3"
+    BASE_VIDEO_DIR = f"{BASE_VIDEO_DIR_HOME}\\{PROJECT_NAME}"
+    PROCESSED_VIDEO_DIR = f"{PROCESSED_VIDEO_DIR_HOME}\\{PROJECT_NAME}"
+    TRAJECTORY_IMAGE_DIR = f"{TRAJECTORY_IMAGE_DIR_HOME}\\{PROJECT_NAME}"
+    TRAJECTORY_POINTS_DIR = f"{TRAJECTORY_POINTS_DIR_HOME}\\{PROJECT_NAME}"
+    HSV_PARAM_PATH = f"{HSV_PARAM_DIR_HOME}\\ball_hsv_param.npz"
 
     cap = cv2.VideoCapture(0)
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
