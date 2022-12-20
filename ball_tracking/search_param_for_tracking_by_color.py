@@ -24,8 +24,8 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
         elif cv2.waitKey(1) & 0xFF == ord("s"):
-            track_bar.save_param_for_tracking_by_color()
-            print('The param is saved.')
+            track_bar.save_param_for_tracking_by_color(SAVE_HSV_PARAM_PATH)
+            print("The param is saved.")
 
     cap.release()
     cv2.destroyAllWindows()

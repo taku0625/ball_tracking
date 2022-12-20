@@ -63,10 +63,10 @@ class TrackBarForTrackingByColor:
     def __set_threshold_to_track_bar_value(self):
         self._threshold = cv2.getTrackbarPos("threshold", "track_bar")
 
-    def save_param_for_tracking_by_color(self):
+    def save_param_for_tracking_by_color(self, save_path):
         self.__set_param_for_tracking_by_color_to_track_bar_value()
         np.savez(
-            "bin/param_for_tracking_by_color.npz",
+            save_path,
             min_hsv=self._min_hsv,
             max_hsv=self._max_hsv,
             threshold=self._threshold,
