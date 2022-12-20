@@ -1,0 +1,6 @@
+PKG_HOME = "C:\\Users\\takut\\takumi\\ball_tracking"
+BASE_VIDEO_DIR_HOME = f"{PKG_HOME}\\data\\base_video"
+HSV_PARAM_DIR_HOME = f"{PKG_HOME}\\data\\hsv_param"
+PROCESSED_VIDEO_DIR_HOME = f"{PKG_HOME}\\data\\processed_video"
+TRAJECTORY_IMAGE_DIR_HOME = f"{PKG_HOME}\\data\\trajectory_image"
+TRAJECTORY_POINTS_DIR_HOME = f"{PKG_HOME}\\data\\trajectory_points"
