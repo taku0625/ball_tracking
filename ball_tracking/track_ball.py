@@ -1,5 +1,7 @@
 import cv2
+import glob
 import numpy as np
+import os
 
 from ball_tracker.tracker_by_color import TrackerByColor
 from const.pkg_path import (
@@ -20,41 +22,60 @@ def main():
     TRAJECTORY_POINTS_DIR = f"{TRAJECTORY_POINTS_DIR_HOME}\\{PROJECT_NAME}"
     HSV_PARAM_PATH = f"{HSV_PARAM_DIR_HOME}\\ball_hsv_param.npz"
 
-    cap = cv2.VideoCapture(0)
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = cap.get(cv2.CAP_PROP_FPS)
+    ball_hsv_param = np.load(HSV_PARAM_PATH, allow_pickle=True)
+    ball_min_hsv = ball_hsv_param["min_hsv"]  # [0, 130, 100]  # [150, 50, 200]
+    ball_max_hsv = ball_hsv_param["max_hsv"]  # [88, 165, 255]  # [180, 255, 255]
+    ball_threshold = float(ball_hsv_param["threshold"])  # 50
     
-    fourcc = cv2.VideoWriter_fourcc(*"XVID")
-    writer = cv2.VideoWriter(
-        "bin/draw_trajectory.avi",
-        fourcc,
-        fps,
-        (width, height)
-    )
+    base_video_path_list = glob.glob(f"{BASE_VIDEO_DIR}\\*")
 
-    tracker = TrackerByColor(min_hsv, max_hsv, threshold)
+    for base_video_path in base_video_path_list:
+        base_video_basename = os.path.splitext(os.path.basename(base_video_path))[0]
+        # get video info
+        cap = cv2.VideoCapture(base_video_path)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
+        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    do_save_video = False
+        fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
-    while True:
-        _, frame = cap.read()
+        tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_threshold)
 
-        if do_save_video:
-            frame = tracker.draw_trajectory(frame)
-            writer.write(frame)
-        cv2.imshow("image", frame)
+        cv2.namedWindow("image", cv2.WINDOW_NORMAL)
+        cv2.resizeWindow("image", 1000, int(1000 * height / width))
 
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
-        elif cv2.waitKey(1) & 0xFF == ord("s"):
-            do_save_video = True
-            print("Saving video")
+        first_loop = True
+        for _ in range(frame_count):
+            _, frame = cap.read()
 
-    cap.release()
-    writer.release()
-    cv2.destroyAllWindows()
+            if first_loop:
+                x1, y1, roi_width, roi_height = cv2.selectROI("image", frame)
+                writer = cv2.VideoWriter(
+                    f"{PROCESSED_VIDEO_DIR}\\{base_video_basename}.avi", fourcc, fps, (roi_width, roi_height)
+                )
+                cv2.resizeWindow("image", 1000, int(1000 * roi_height / roi_width))
+                first_loop = False
 
+            roi_frame = frame[y1 : y1 + roi_height, x1 : x1 + roi_width]
+            roi_frame = tracker.draw_trajectory(roi_frame)
+            writer.write(roi_frame)
+
+        cv2.imwrite(f"{TRAJECTORY_IMAGE_DIR}\\{base_video_basename}.jpeg", roi_frame)
+        roi_trajectory_points = np.array(
+            [
+                (x / roi_width * SUPPORT_WIDTH, - y / roi_height * SUPPORT_HEIGHT + SUPPORT_HEIGHT) 
+                for x, y in tracker.trajectory_points
+            ]
+        )
+        np.save(f"{TRAJECTORY_POINTS_DIR}\\{base_video_basename}.npy", roi_trajectory_points)
+
+        cap.release()
+        writer.release()
+        cv2.destroyAllWindows()
+
+        plt.scatter(roi_trajectory_points[:, 0], roi_trajectory_points[:, 1])
+        plt.show()
 
 if __name__ == "__main__":
     main()
