@@ -40,7 +40,8 @@ def main():
 
         fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
-        tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_threshold)
+        base_tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_threshold)
+        roi_tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_threshold)
 
         cv2.namedWindow("image", cv2.WINDOW_NORMAL)
         cv2.resizeWindow("image", 1000, int(1000 * height / width))
@@ -52,20 +53,21 @@ def main():
             if first_loop:
                 x1, y1, roi_width, roi_height = cv2.selectROI("image", frame)
                 writer = cv2.VideoWriter(
-                    f"{PROCESSED_VIDEO_DIR}\\{base_video_basename}.avi", fourcc, fps, (roi_width, roi_height)
+                    f"{PROCESSED_VIDEO_DIR}\\{base_video_basename}.avi", fourcc, fps, (width, height)
                 )
                 cv2.resizeWindow("image", 1000, int(1000 * roi_height / roi_width))
                 first_loop = False
 
             roi_frame = frame[y1 : y1 + roi_height, x1 : x1 + roi_width]
-            roi_frame = tracker.draw_trajectory(roi_frame)
-            writer.write(roi_frame)
+            roi_frame = roi_tracker.draw_trajectory(roi_frame)
+            frame = base_tracker.draw_trajectory(frame)
+            writer.write(frame)
 
-        cv2.imwrite(f"{TRAJECTORY_IMAGE_DIR}\\{base_video_basename}.jpeg", roi_frame)
+        cv2.imwrite(f"{TRAJECTORY_IMAGE_DIR}\\{base_video_basename}.jpeg", frame)
         roi_trajectory_points = np.array(
             [
                 (x / roi_width * SUPPORT_WIDTH, - y / roi_height * SUPPORT_HEIGHT + SUPPORT_HEIGHT) 
-                for x, y in tracker.trajectory_points
+                for x, y in roi_tracker.trajectory_points
             ]
         )
         np.save(f"{TRAJECTORY_POINTS_DIR}\\{base_video_basename}.npy", roi_trajectory_points)
