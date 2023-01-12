@@ -36,12 +36,7 @@ class HsvProcessor:
     def __find_contours(self, image):
         mask_image = self.generate_mask(image)
         gray_image = cv2.cvtColor(mask_image, cv2.COLOR_RGB2GRAY)
-        _, binary = cv2.threshold(
-            gray_image,
-            self._threshold,
-            255,
-            cv2.THRESH_BINARY,
-        )
+        _, binary = cv2.threshold(gray_image, self._threshold, 255, cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         return list(filter(lambda x: cv2.contourArea(x) > 100, contours))
 
