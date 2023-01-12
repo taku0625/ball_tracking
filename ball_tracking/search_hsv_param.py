@@ -1,7 +1,7 @@
 import cv2
 
-from analysis_tools.hsv_processor import HsvProcessor
-from analysis_tools.track_bar_for_tracking_by_color import TrackBarForTrackingByColor
+from analysis_tools.hsv_processor import HSVProcessor
+from analysis_tools.hsv_track_bar import HSVTrackBar
 from const.pkg_path import BASE_VIDEO_DIR_HOME, HSV_PARAM_DIR_HOME
 
 def main():

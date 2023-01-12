@@ -4,9 +4,7 @@ import numpy as np
 from const.hsv_idx import HUE_IDX, SATURATION_IDX, VALUE_IDX
 
 
-class HsvProcessor:
-    def __init__(self, min_hsv, max_hsv, threshold):
-        self.set_param_for_tracking(min_hsv, max_hsv, threshold)
+class HSVProcessor:
 
     def set_param_for_tracking(self, min_hsv, max_hsv, threshold):
         self._min_hsv = np.array(min_hsv)

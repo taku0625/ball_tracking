@@ -4,7 +4,7 @@ import numpy as np
 from const.hsv_idx import HUE_IDX, SATURATION_IDX, VALUE_IDX
 
 
-class TrackBarForTrackingByColor:
+class HSVTrackBar:
     def __init__(self, initial_min_hsv, initial_max_hsv, initial_threshold):
         def nothing(x):
             pass
