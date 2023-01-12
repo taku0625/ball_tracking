@@ -25,7 +25,7 @@ def main():
     ball_hsv_param = np.load(HSV_PARAM_PATH, allow_pickle=True)
     ball_min_hsv = ball_hsv_param["min_hsv"]  # [0, 130, 100]  # [150, 50, 200]
     ball_max_hsv = ball_hsv_param["max_hsv"]  # [88, 165, 255]  # [180, 255, 255]
-    ball_threshold = float(ball_hsv_param["threshold"])  # 50
+    ball_binary_threshold = float(ball_hsv_param["binary_threshold"])  # 50
     
     base_video_path_list = glob.glob(f"{BASE_VIDEO_DIR}\\*")
 
@@ -40,8 +40,8 @@ def main():
 
         fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
-        base_tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_threshold)
-        roi_tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_threshold)
+        base_tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_binary_threshold)
+        roi_tracker = TrackerByColor(ball_min_hsv, ball_max_hsv, ball_binary_threshold)
 
         cv2.namedWindow("image", cv2.WINDOW_NORMAL)
         cv2.resizeWindow("image", 1000, int(1000 * height / width))
@@ -77,6 +77,7 @@ def main():
         cv2.destroyAllWindows()
 
         plt.scatter(roi_trajectory_points[:, 0], roi_trajectory_points[:, 1])
+        plt.savefig()
         plt.show()
 
 if __name__ == "__main__":
