@@ -5,11 +5,48 @@ from const.hsv_idx import HUE_IDX, SATURATION_IDX, VALUE_IDX
 
 
 class HSVProcessor:
+    def __init__(self, min_hsv, max_hsv, binary_threshold):
+        self.min_hsv = min_hsv
+        self.max_hsv = max_hsv
+        self.binary_threshold = binary_threshold
 
-    def set_param_for_tracking(self, min_hsv, max_hsv, threshold):
-        self._min_hsv = np.array(min_hsv)
-        self._max_hsv = np.array(max_hsv)
-        self._threshold = threshold
+    @property
+    def min_hsv(self):
+        return self._min_hsv
+
+    @property
+    def max_hsv(self):
+        return self._max_hsv
+
+    @property
+    def binary_threshold(self):
+        return self._binary_threshold
+
+    @min_hsv.setter
+    def min_hsv(self, min_hsv):
+        if self.__allow_set_hsv(min_hsv):
+            self._min_hsv = np.array(min_hsv)
+        else:
+            raise ValueError("The min_hsv is not in the range.")
+
+    @max_hsv.setter
+    def max_hsv(self, max_hsv):
+        if self.__allow_set_hsv(max_hsv):
+            self._max_hsv = np.array(max_hsv)
+        else:
+            raise ValueError("The min_hsv is not in the range.")
+
+    @binary_threshold.setter
+    def binary_threshold(self, binary_threshold):
+        if self.__allow_set_binary_threshold:
+            self._binary_threshold = binary_threshold
+
+    def __allow_set_hsv(self, hsv):
+        is_in_range = [0 <= value <= 255 for value in hsv]
+        return all(is_in_range)
+
+    def __allow_set_binary_threshold(self, binary_threshold):
+        return 0 <= binary_threshold <= 100
 
     def generate_mask(self, image):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -34,7 +71,7 @@ class HSVProcessor:
     def __find_contours(self, image):
         mask_image = self.generate_mask(image)
         gray_image = cv2.cvtColor(mask_image, cv2.COLOR_RGB2GRAY)
-        _, binary = cv2.threshold(gray_image, self._threshold, 255, cv2.THRESH_BINARY)
+        _, binary = cv2.threshold(gray_image, self._binary_threshold, 255, cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         return list(filter(lambda x: cv2.contourArea(x) > 100, contours))
 
