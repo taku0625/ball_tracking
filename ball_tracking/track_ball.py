@@ -20,6 +20,7 @@ def main():
     PROCESSED_VIDEO_DIR = f"{PROCESSED_VIDEO_DIR_HOME}\\{PROJECT_NAME}"
     TRAJECTORY_IMAGE_DIR = f"{TRAJECTORY_IMAGE_DIR_HOME}\\{PROJECT_NAME}"
     TRAJECTORY_POINTS_DIR = f"{TRAJECTORY_POINTS_DIR_HOME}\\{PROJECT_NAME}"
+    TRAJECTORY_POINTS_IMG_DIR = f"{TRAJECTORY_POINTS_IMG_DIR_HOME}\\{PROJECT_NAME}"
     HSV_PARAM_PATH = f"{HSV_PARAM_DIR_HOME}\\ball_hsv_param.npz"
 
     ball_hsv_param = np.load(HSV_PARAM_PATH, allow_pickle=True)
@@ -77,7 +78,7 @@ def main():
         cv2.destroyAllWindows()
 
         plt.scatter(roi_trajectory_points[:, 0], roi_trajectory_points[:, 1])
-        plt.savefig()
+        plt.savefig(f"{TRAJECTORY_POINTS_IMG_DIR}\\{base_video_basename}.png")
         plt.show()
 
 if __name__ == "__main__":
