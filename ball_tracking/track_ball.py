@@ -4,14 +4,7 @@ import numpy as np
 import os
 
 from ball_tracker.tracker_by_color import TrackerByColor
-from const.pkg_path import (
-    BASE_VIDEO_DIR_HOME,
-    HSV_PARAM_DIR_HOME,
-    PROCESSED_VIDEO_DIR_HOME,
-    TRAJECTORY_IMAGE_DIR_HOME,
-    TRAJECTORY_POINTS_DIR_HOME,
-    TRAJECTORY_POINTS_IMG_DIR_HOME,
-)
+from const.pkg_path import *
 from const.design_and_drafting_no3 import SUPPORT_WIDTH, SUPPORT_HEIGHT
 import matplotlib.pyplot as plt
 
@@ -26,7 +19,7 @@ class TrackBall:
         self._ball_min_hsv = ball_hsv_param["min_hsv"]  # [0, 130, 100]  # [150, 50, 200]
         self._ball_max_hsv = ball_hsv_param["max_hsv"]  # [88, 165, 255]  # [180, 255, 255]
         self._ball_binary_threshold = float(ball_hsv_param["binary_threshold"])  # 50
-        
+
         base_video_path_list = glob.glob(f"{BASE_VIDEO_DIR}\\*")
         for base_video_path in base_video_path_list:
             self.__prepare_track(base_video_path)
@@ -51,6 +44,7 @@ class TrackBall:
     def __prepare_track(self, base_video_path):
         PROCESSED_VIDEO_DIR = f"{PROCESSED_VIDEO_DIR_HOME}\\{self._project_name}"
         self._base_video_basename = os.path.splitext(os.path.basename(base_video_path))[0]
+
         # get video info
         self._cap = cv2.VideoCapture(base_video_path)
         width = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
